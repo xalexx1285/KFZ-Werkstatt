@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ice: #00f0ff;
+  --ice-light: #80faff;
+  --void: #030303;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--void);
+}
+
+body {
+  margin: 0;
+  background-color: var(--void);
+  color: #ffffff;
+  font-family: "Satoshi", -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow-x: hidden;
+  cursor: default;
+}
+
+::selection {
+  background: var(--ice);
+  color: #000000;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 9px;
+}
+::-webkit-scrollbar-track {
+  background: #030303;
+}
+::-webkit-scrollbar-thumb {
+  background: #1f1f1f;
+  border-radius: 0;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ice);
+}
+
+/* Display heading helper */
+.font-display {
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-feature-settings: "ss01";
+}
+
+/* Outline / stroked text for marquee + accents */
+.text-stroke {
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.55);
+  color: transparent;
+}
+.text-stroke-ice {
+  -webkit-text-stroke: 1.5px var(--ice);
+  color: transparent;
+}
+
+/* Glassmorphism navbar */
+.glass {
+  background: rgba(3, 3, 3, 0.55);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+}
+
+/* Cinematic film grain */
+.grain-overlay {
+  position: fixed;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+  z-index: 200;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Hide default focus ring but keep accessible outline for keyboard */
+:focus-visible {
+  outline: 2px solid var(--ice);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
