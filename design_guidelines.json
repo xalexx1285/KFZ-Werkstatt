@@ -1,0 +1,90 @@
+{
+  "theme": "Archetype 5: Luxury & Swiss High-Contrast (Dark Theme)",
+  "domain": "Premium Automotive/Performance Showcase",
+  "typography": {
+    "heading_font": "Cabinet Grotesk, sans-serif",
+    "body_font": "Satoshi, sans-serif",
+    "font_urls": {
+      "cabinet_grotesk": "https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@800,900,700,500,400&display=swap",
+      "satoshi": "https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap"
+    },
+    "hierarchy": {
+      "h1": "text-5xl md:text-7xl lg:text-[10vw] uppercase font-black tracking-tighter leading-none text-white",
+      "h2": "text-4xl md:text-6xl font-extrabold uppercase tracking-tight text-white",
+      "h3": "text-2xl md:text-4xl font-bold uppercase tracking-tight text-white",
+      "body": "text-base md:text-lg font-medium text-zinc-400 leading-relaxed",
+      "overline": "text-xs md:text-sm uppercase tracking-[0.3em] font-bold text-[#00F0FF]"
+    }
+  },
+  "colors": {
+    "background": {
+      "primary": "#030303",
+      "secondary": "#0A0A0A",
+      "surface": "#121212"
+    },
+    "text": {
+      "primary": "#FFFFFF",
+      "secondary": "#A1A1AA",
+      "muted": "#52525B",
+      "inverted": "#000000"
+    },
+    "accent": {
+      "cyan": "#00F0FF",
+      "ice_blue": "#80FAFF",
+      "glow": "rgba(0, 240, 255, 0.15)"
+    },
+    "border": "#27272A"
+  },
+  "visual_enhancers": {
+    "surfaces": "Glassmorphism for nav (bg-black/40 backdrop-blur-2xl border-b border-white/5). Solid ultra-dark backgrounds elsewhere to let the product shine.",
+    "effects": "Heavy use of negative space. Lusion-style pitch-black backgrounds where the product is the only source of color/light. Use a subtle noise/grain overlay (pointer-events-none, fixed, 3% opacity) to give a cinematic film feel."
+  },
+  "motion_and_interactions": {
+    "hero_scroll": "CRITICAL: Implement a scroll-controlled hero sequence using framer-motion (useScroll, useTransform). Wrap the hero in a h-[300vh] or h-[400vh] container. Inside, use a sticky top-0 h-screen block. Map scrollYProgress to the wheel image: scale (e.g. 1 to 3), rotate (0deg to 180deg), and translate (center to offset). Synchronize text layer opacities to crossfade at scroll thresholds.",
+    "text_reveal": "Large typography sections (Lando Norris style) must use staggered line/word reveals using Framer Motion (initial: y: 100%, clip-path mask).",
+    "hover_states": "Buttons should have magnetic feel or fill-slide effects. Text color must invert to black on hover against solid cyan background.",
+    "parallax": "Subtle y-axis parallax on background textures (like the carbon fiber) in sections below the hero."
+  },
+  "layout_and_spacing": {
+    "padding": "Generous spacing: p-8, py-32, md:py-48. Use negative space aggressively.",
+    "alignment": "Mix of dead-center alignment for massive impact headers and aggressive asymmetry (left-aligned giant text, right-aligned product stats).",
+    "navigation": "Sticky, minimal top nav (z-[100]). Logo on left, links center, Cyan CTA on right."
+  },
+  "image_urls": [
+    {
+      "category": "Hero Product",
+      "description": "Premium alloy wheel. MUST BE USED in the scroll-scrub section.",
+      "url": "https://customer-assets.emergentagent.com/job_b8b5a439-0f6d-4bc1-b94a-302854f72d70/artifacts/a5j625w9_ChatGPT%20Image%201.%20Juni%202026%2C%2012_04_10%20%281%29.png"
+    },
+    {
+      "category": "Background Texture",
+      "description": "Cyan light bleed for dark sections. Use with mix-blend-screen or opacity-30.",
+      "url": "https://static.prod-images.emergentagent.com/jobs/b8b5a439-0f6d-4bc1-b94a-302854f72d70/images/1baafe9007941feb37d4afa5266f4fc7e1de48016df754600f046eaa484a8223.png"
+    },
+    {
+      "category": "Material Detail",
+      "description": "Carbon fiber texture for engineering/specs section background. Overlay with gradient to black so it fades seamlessly.",
+      "url": "https://static.prod-images.emergentagent.com/jobs/b8b5a439-0f6d-4bc1-b94a-302854f72d70/images/b2638919f4be3346a82a0faa0e35eca9fc49bd111cd5c5df5acd826577518a20.png"
+    }
+  ],
+  "components": {
+    "nav": "Custom HTML/Tailwind sticky nav with blur. data-testid='main-nav'",
+    "hero_scroll_section": "Custom framer-motion wrapper (h-[400vh]) for scroll-timeline effects. data-testid='hero-scroll-container'",
+    "typography_mask": "Custom framer-motion text block for staggered reveals. data-testid='staggered-text'",
+    "stats_counter": "Framer motion useSpring/useMotionValue for animating numbers. data-testid='stat-counter'",
+    "marquee": "react-fast-marquee for brand words strip. data-testid='brand-marquee'",
+    "footer": "Massive wordmark footer. data-testid='main-footer'"
+  },
+  "instructions_to_main_agent": [
+    "Install required dependencies: framer-motion, react-fast-marquee, lucide-react, clsx, tailwind-merge.",
+    "Add Fontshare links for 'Cabinet Grotesk' and 'Satoshi' to the main HTML or import via CSS.",
+    "ALL CONTENT MUST BE IN GERMAN.",
+    "Do NOT use generic Shadcn Card/Section components. Build completely custom, semantic HTML sections with pure Tailwind/Framer Motion to match the Lusion/LandoNorris high-end creative style.",
+    "HERO IMPLEMENTATION (CRITICAL): Create a <div className='h-[400vh] relative' data-testid='hero-scroll-container'>. Inside, use a <div className='sticky top-0 h-screen overflow-hidden flex items-center justify-center'>. Inside that, place the wheel image. Use Framer Motion's useScroll to get the scrollYProgress of the wrapper. Map that progress to the image's scale (e.g., [0, 0.5, 1] -> [1, 2, 4]) and rotation (e.g., [0, 1] -> [0, 360deg]).",
+    "Overlay multiple text blocks (absolute positioned) inside the sticky hero that fade in and out based on the same scrollYProgress (e.g. Text 1 'DIE ZUKUNFT DER PERFORMANCE' visible at 0-0.3, Text 2 'AERODYNAMIK NEU GEDACHT' visible at 0.4-0.6).",
+    "Add a 'Spezifikationen' (Specifications) section with animated counting numbers using Framer Motion (e.g., 'Gewicht: 8.4 kg', 'Zoll: 21\"'). Use the carbon fiber texture as a subtle background here.",
+    "Add a scrolling text marquee section featuring words like 'PERFEKTION', 'AERODYNAMIK', 'PRÄZISION' in outline text style.",
+    "Buttons should be striking: solid #00F0FF background with black text, zero border radius (rounded-none) for a brutalist, highly engineered feel.",
+    "Enforce APCA contrast ratios. Ensure all interactive and key elements have 'data-testid' attributes (e.g., data-testid='buy-button')."
+  ]
+}
