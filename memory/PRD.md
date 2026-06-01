@@ -14,8 +14,8 @@ Assets provided: a cinematic dark studio photo of a premium alloy wheel/tire, an
 ## Real Business (final content brief)
 - **KFZ-Meisterwerkstatt Isaak**, Inhaber **Andreas Isaak**
 - Address: **Anton-Fecke-Str. 6, 33034 Brakel-Erkeln**, Deutschland
-- Phone: **05272 390854** (tel:+495272390854) · Mobil: **0163 9755353** (tel:+491639755353)
-- Hours: Mo–Fr 08:00–18:30, Sa 08:30–14:00, So geschlossen
+- Phone (single, mobile only): **0163 9755353** (tel:+491639755353) — also used for WhatsApp
+- Hours: **Mo–Fr 14:30–20:00, Sa 08:00–14:00, So geschlossen**
 - Region: Brakel, Erkeln und Umgebung
 - Services: KFZ-Reparaturen, Inspektion, Reifenservice, Felgenservice, Werkstattservice
 - Goal: drive local customers to **call / request appointment / plan route**
@@ -30,6 +30,11 @@ Assets provided: a cinematic dark studio photo of a premium alloy wheel/tire, an
 - Served on port 3000 (supervisor `frontend`); REACT_APP_BACKEND_URL from env.
 
 ## What's Implemented (2026-06-01)
+### Iteration 3 — client revisions
+- **Phone:** removed the landline; the single contact number everywhere is the mobile **0163 9755353** (tel:+491639755353). Removed duplicate "Mobil" rows in Contact + Footer.
+- **Opening hours updated:** Mo–Fr **14:30–20:00**, Sa **08:00–14:00**, So geschlossen — reflected in the table, hoursShort and the live open-status logic (SCHEDULE in utils.js).
+- **Smooth scroll-video:** re-encoded the hero clip to `public/hero-scrub.mp4` (1280×720, H.264 **all-intra — every one of 193 frames is a keyframe**) so seeking is instant. Scrub logic rewritten as a single rAF loop that eases `currentTime` toward the scroll target with a `!video.seeking` guard (prevents seek pile-up = the stutter cause). Original kept as `hero-reifen.mp4` fallback.
+
 ### Iteration 2 — Hero video + WhatsApp + live open-status
 - **Scroll-scrubbed hero VIDEO** (HeroScroll.jsx): replaced the still wheel image with the client's MP4 (`/public/hero-reifen.mp4`, H.264/avc1). Desktop scrubs `video.currentTime` from scroll progress (useScroll + useMotionValueEvent); mobile/reduced-motion autoplays a muted loop. Poster = wheel image fallback (graceful when codec unavailable). Server serves it with HTTP 206 range requests.
 - **Live "Heute geöffnet / geschlossen" indicator** (OpenStatus.jsx + getOpenStatus in utils.js): computes status from Europe/Berlin time vs the schedule; green pulsing dot + "Jetzt geöffnet · bis HH:MM Uhr" or "Geschlossen · öffnet …". Shown in hero Phase A and in the Contact opening-hours card; refreshes every 60s.

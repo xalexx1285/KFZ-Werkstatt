@@ -14,7 +14,7 @@ export const IMAGES = {
     "https://static.prod-images.emergentagent.com/jobs/b8b5a439-0f6d-4bc1-b94a-302854f72d70/images/b2638919f4be3346a82a0faa0e35eca9fc49bd111cd5c5df5acd826577518a20.png",
 };
 
-export const HERO_VIDEO = `${process.env.PUBLIC_URL || ""}/hero-reifen.mp4`;
+export const HERO_VIDEO = `${process.env.PUBLIC_URL || ""}/hero-scrub.mp4`;
 
 const WA_MESSAGE = encodeURIComponent(
   "Hallo, ich möchte gerne einen Termin in der KFZ-Meisterwerkstatt Isaak anfragen."
@@ -27,22 +27,20 @@ export const BUSINESS = {
   street: "Anton-Fecke-Str. 6",
   city: "33034 Brakel-Erkeln",
   region: "Brakel, Erkeln und Umgebung",
-  phoneDisplay: "05272 390854",
-  phoneHref: "tel:+495272390854",
-  mobileDisplay: "0163 9755353",
-  mobileHref: "tel:+491639755353",
+  phoneDisplay: "0163 9755353",
+  phoneHref: "tel:+491639755353",
   whatsappDisplay: "0163 9755353",
   whatsappHref: `https://wa.me/491639755353?text=${WA_MESSAGE}`,
   hours: [
-    { d: "Montag", h: "08:00 – 18:30", open: true },
-    { d: "Dienstag", h: "08:00 – 18:30", open: true },
-    { d: "Mittwoch", h: "08:00 – 18:30", open: true },
-    { d: "Donnerstag", h: "08:00 – 18:30", open: true },
-    { d: "Freitag", h: "08:00 – 18:30", open: true },
-    { d: "Samstag", h: "08:30 – 14:00", open: true },
+    { d: "Montag", h: "14:30 – 20:00", open: true },
+    { d: "Dienstag", h: "14:30 – 20:00", open: true },
+    { d: "Mittwoch", h: "14:30 – 20:00", open: true },
+    { d: "Donnerstag", h: "14:30 – 20:00", open: true },
+    { d: "Freitag", h: "14:30 – 20:00", open: true },
+    { d: "Samstag", h: "08:00 – 14:00", open: true },
     { d: "Sonntag", h: "Geschlossen", open: false },
   ],
-  hoursShort: "Mo–Fr 08:00–18:30 · Sa 08:30–14:00",
+  hoursShort: "Mo–Fr 14:30–20:00 · Sa 08:00–14:00",
   mapsEmbed:
     "https://maps.google.com/maps?q=Anton-Fecke-Str.%206,%2033034%20Brakel-Erkeln&t=&z=15&ie=UTF8&iwloc=&output=embed",
   mapsDir:
@@ -53,12 +51,12 @@ export const BUSINESS = {
 // minutes-of-day ranges per weekday (0 = Sunday … 6 = Saturday)
 const SCHEDULE = {
   0: [], // Sonntag geschlossen
-  1: [[480, 1110]], // Mo 08:00–18:30
-  2: [[480, 1110]],
-  3: [[480, 1110]],
-  4: [[480, 1110]],
-  5: [[480, 1110]],
-  6: [[510, 840]], // Sa 08:30–14:00
+  1: [[870, 1200]], // Mo 14:30–20:00
+  2: [[870, 1200]],
+  3: [[870, 1200]],
+  4: [[870, 1200]],
+  5: [[870, 1200]],
+  6: [[480, 840]], // Sa 08:00–14:00
 };
 const DAY_NAMES = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
 

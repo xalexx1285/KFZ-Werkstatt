@@ -52,8 +52,8 @@ export default function Footer() {
             <div className="mt-5 space-y-2 text-sm font-medium text-zinc-400">
               <div>{BUSINESS.street}</div>
               <div>{BUSINESS.city}</div>
-              <a href={BUSINESS.phoneHref} className="block transition-colors hover:text-ice">Tel: {BUSINESS.phoneDisplay}</a>
-              <a href={BUSINESS.mobileHref} className="block transition-colors hover:text-ice">Mobil: {BUSINESS.mobileDisplay}</a>
+              <a href={BUSINESS.phoneHref} className="block transition-colors hover:text-ice">Telefon: {BUSINESS.phoneDisplay}</a>
+              <a href={BUSINESS.whatsappHref} target="_blank" rel="noopener noreferrer" className="block transition-colors hover:text-ice">WhatsApp: {BUSINESS.whatsappDisplay}</a>
               <a href={BUSINESS.mapsDir} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 pt-2 text-ice transition-colors hover:text-white">
                 Route planen <ArrowUpRight size={14} />
               </a>
@@ -71,7 +71,6 @@ export default function Footer() {
               <div>{BUSINESS.city}</div>
               <div>Deutschland</div>
               <div className="pt-2">Telefon: {BUSINESS.phoneDisplay}</div>
-              <div>Mobil: {BUSINESS.mobileDisplay}</div>
             </div>
           </div>
         </div>

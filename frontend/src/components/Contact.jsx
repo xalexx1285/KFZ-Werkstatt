@@ -1,5 +1,5 @@
 import React from "react";
-import { Phone, Smartphone, MapPin, Clock, ArrowUpRight } from "lucide-react";
+import { Phone, MapPin, Clock, ArrowUpRight } from "lucide-react";
 import { BUSINESS } from "../lib/utils";
 import { RevealText, FadeIn } from "./Reveal";
 import WhatsAppIcon from "./WhatsAppIcon";
@@ -44,10 +44,6 @@ export default function Contact() {
                   <a href={BUSINESS.phoneHref} data-testid="contact-phone" className="flex items-center gap-4 text-zinc-300 transition-colors hover:text-ice">
                     <Phone size={20} className="flex-shrink-0 text-ice" />
                     <span className="text-base font-bold">{BUSINESS.phoneDisplay}</span>
-                  </a>
-                  <a href={BUSINESS.mobileHref} data-testid="contact-mobile" className="flex items-center gap-4 text-zinc-300 transition-colors hover:text-ice">
-                    <Smartphone size={20} className="flex-shrink-0 text-ice" />
-                    <span className="text-base font-bold">{BUSINESS.mobileDisplay}</span>
                   </a>
                   <div className="flex items-start gap-4">
                     <Clock size={20} className="mt-0.5 flex-shrink-0 text-ice" />

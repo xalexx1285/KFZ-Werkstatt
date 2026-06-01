@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { Phone, CalendarClock, ChevronRight, MoveDown } from "lucide-react";
 import { HERO_VIDEO, IMAGES, BUSINESS } from "../lib/utils";
@@ -8,11 +8,17 @@ export default function HeroScroll() {
   const wrapperRef = useRef(null);
   const videoRef = useRef(null);
   const scrubRef = useRef(true);
-  const [duration, setDuration] = useState(0);
+  const targetRef = useRef(0); // latest scroll progress 0..1
+  const rafRef = useRef(null);
 
   const { scrollYProgress } = useScroll({
     target: wrapperRef,
     offset: ["start start", "end end"],
+  });
+
+  // Cheaply store the latest scroll progress; the rAF loop consumes it.
+  useMotionValueEvent(scrollYProgress, "change", (p) => {
+    targetRef.current = Math.min(Math.max(p, 0), 1);
   });
 
   // Decide scrub (desktop) vs autoplay-loop (mobile / reduced motion)
@@ -20,42 +26,49 @@ export default function HeroScroll() {
     const v = videoRef.current;
     if (!v) return;
 
-    const onMeta = () => setDuration(v.duration || 0);
-    v.addEventListener("loadedmetadata", onMeta);
-    if (v.readyState >= 1) onMeta();
-
     const isTouch = window.matchMedia("(max-width: 1024px)").matches;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const scrub = !isTouch && !reduce;
     scrubRef.current = scrub;
 
-    if (scrub) {
-      v.pause();
-    } else {
+    if (!scrub) {
+      // Mobile / reduced motion: just loop the clip muted.
       v.loop = true;
       v.muted = true;
-      const p = v.play();
-      if (p && p.catch) p.catch(() => {});
+      const pr = v.play();
+      if (pr && pr.catch) pr.catch(() => {});
+      return;
     }
 
-    return () => v.removeEventListener("loadedmetadata", onMeta);
-  }, []);
-
-  // Scrub the video timeline with scroll progress (desktop)
-  useMotionValueEvent(scrollYProgress, "change", (p) => {
-    const v = videoRef.current;
-    if (!v || !scrubRef.current) return;
-    const d = v.duration || duration;
-    if (!d || Number.isNaN(d)) return;
-    const t = Math.min(Math.max(p, 0), 1) * d;
-    if (Math.abs(v.currentTime - t) > 0.03) {
-      try {
-        v.currentTime = t;
-      } catch (e) {
-        /* seeking not ready yet */
+    // Desktop scrub: ease video.currentTime toward the scroll target inside a
+    // single rAF loop. The !v.seeking guard prevents seek pile-up (the main
+    // cause of stutter); the all-intra encode makes each seek instant.
+    v.pause();
+    let mounted = true;
+    const tick = () => {
+      if (!mounted) return;
+      const d = v.duration;
+      if (d && !Number.isNaN(d)) {
+        const target = targetRef.current * d;
+        const cur = v.currentTime;
+        const delta = target - cur;
+        if (!v.seeking && Math.abs(delta) > 0.008) {
+          try {
+            v.currentTime = cur + delta * 0.22;
+          } catch (e) {
+            /* not ready to seek yet */
+          }
+        }
       }
-    }
-  });
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+
+    return () => {
+      mounted = false;
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
 
   // Visual transforms
   const videoScale = useTransform(scrollYProgress, [0, 1], [1.06, 1.16]);
