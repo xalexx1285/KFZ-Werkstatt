@@ -10,6 +10,7 @@ import Contact from "./components/Contact";
 import Location from "./components/Location";
 import Footer from "./components/Footer";
 import MobileCallBar from "./components/MobileCallBar";
+import WhatsAppFab from "./components/WhatsAppFab";
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
       </main>
       <Footer />
       <MobileCallBar />
+      <WhatsAppFab />
     </div>
   );
 }

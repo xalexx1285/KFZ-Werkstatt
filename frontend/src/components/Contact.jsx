@@ -2,6 +2,8 @@ import React from "react";
 import { Phone, Smartphone, MapPin, Clock, ArrowUpRight } from "lucide-react";
 import { BUSINESS } from "../lib/utils";
 import { RevealText, FadeIn } from "./Reveal";
+import WhatsAppIcon from "./WhatsAppIcon";
+import OpenStatus from "./OpenStatus";
 
 export default function Contact() {
   return (
@@ -54,23 +56,34 @@ export default function Contact() {
                 </div>
               </div>
 
-              <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+              <div className="mt-10 flex flex-col gap-4">
                 <a
                   href={BUSINESS.phoneHref}
                   data-testid="contact-call-button"
-                  className="group inline-flex flex-1 items-center justify-center gap-2 bg-ice px-7 py-4 text-sm font-bold uppercase tracking-[0.1em] text-black transition-all duration-300 hover:bg-white"
+                  className="group inline-flex items-center justify-center gap-2 bg-ice px-7 py-4 text-sm font-bold uppercase tracking-[0.1em] text-black transition-all duration-300 hover:bg-white"
                 >
                   <Phone size={18} /> Jetzt anrufen
                 </a>
-                <a
-                  href={BUSINESS.mapsDir}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  data-testid="contact-route-button"
-                  className="group inline-flex flex-1 items-center justify-center gap-2 border border-white/25 px-7 py-4 text-sm font-bold uppercase tracking-[0.1em] text-white transition-all duration-300 hover:border-ice hover:text-ice"
-                >
-                  Route planen <ArrowUpRight size={18} />
-                </a>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <a
+                    href={BUSINESS.whatsappHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-testid="contact-whatsapp-button"
+                    className="group inline-flex items-center justify-center gap-2 border border-[#25D366]/50 px-7 py-4 text-sm font-bold uppercase tracking-[0.1em] text-white transition-all duration-300 hover:bg-[#25D366] hover:text-black"
+                  >
+                    <WhatsAppIcon size={18} className="text-[#25D366] transition-colors duration-300 group-hover:text-black" /> WhatsApp
+                  </a>
+                  <a
+                    href={BUSINESS.mapsDir}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-testid="contact-route-button"
+                    className="group inline-flex items-center justify-center gap-2 border border-white/25 px-7 py-4 text-sm font-bold uppercase tracking-[0.1em] text-white transition-all duration-300 hover:border-ice hover:text-ice"
+                  >
+                    Route planen <ArrowUpRight size={18} />
+                  </a>
+                </div>
               </div>
             </div>
           </FadeIn>
@@ -78,11 +91,14 @@ export default function Contact() {
           {/* Opening hours */}
           <FadeIn delay={0.1}>
             <div id="oeffnungszeiten" className="flex h-full scroll-mt-24 flex-col border border-white/10 bg-void-800 p-8 md:p-12">
-              <div className="flex items-center gap-3">
-                <Clock size={22} className="text-ice" />
-                <h3 className="font-display text-2xl font-black uppercase tracking-tight text-white md:text-3xl">
-                  Öffnungszeiten
-                </h3>
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <Clock size={22} className="text-ice" />
+                  <h3 className="font-display text-2xl font-black uppercase tracking-tight text-white md:text-3xl">
+                    Öffnungszeiten
+                  </h3>
+                </div>
+                <OpenStatus />
               </div>
 
               <ul className="mt-8 divide-y divide-white/10" data-testid="opening-hours-list">

@@ -1,24 +1,64 @@
-import React, { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import React, { useEffect, useRef, useState } from "react";
+import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { Phone, CalendarClock, ChevronRight, MoveDown } from "lucide-react";
-import { IMAGES, BUSINESS } from "../lib/utils";
+import { HERO_VIDEO, IMAGES, BUSINESS } from "../lib/utils";
+import OpenStatus from "./OpenStatus";
 
 export default function HeroScroll() {
   const wrapperRef = useRef(null);
+  const videoRef = useRef(null);
+  const scrubRef = useRef(true);
+  const [duration, setDuration] = useState(0);
+
   const { scrollYProgress } = useScroll({
     target: wrapperRef,
     offset: ["start start", "end end"],
   });
 
-  // Wheel transforms
-  const wheelScale = useTransform(scrollYProgress, [0, 0.55, 1], [0.85, 1.4, 2.6]);
-  const wheelRotate = useTransform(scrollYProgress, [0, 1], [0, 200]);
-  const wheelY = useTransform(scrollYProgress, [0, 1], ["2%", "-5%"]);
-  const wheelOpacity = useTransform(scrollYProgress, [0, 0.86, 1], [1, 1, 0.2]);
+  // Decide scrub (desktop) vs autoplay-loop (mobile / reduced motion)
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
 
-  // Background parallax
-  const glowScale = useTransform(scrollYProgress, [0, 1], [1, 1.7]);
-  const bleedY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
+    const onMeta = () => setDuration(v.duration || 0);
+    v.addEventListener("loadedmetadata", onMeta);
+    if (v.readyState >= 1) onMeta();
+
+    const isTouch = window.matchMedia("(max-width: 1024px)").matches;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const scrub = !isTouch && !reduce;
+    scrubRef.current = scrub;
+
+    if (scrub) {
+      v.pause();
+    } else {
+      v.loop = true;
+      v.muted = true;
+      const p = v.play();
+      if (p && p.catch) p.catch(() => {});
+    }
+
+    return () => v.removeEventListener("loadedmetadata", onMeta);
+  }, []);
+
+  // Scrub the video timeline with scroll progress (desktop)
+  useMotionValueEvent(scrollYProgress, "change", (p) => {
+    const v = videoRef.current;
+    if (!v || !scrubRef.current) return;
+    const d = v.duration || duration;
+    if (!d || Number.isNaN(d)) return;
+    const t = Math.min(Math.max(p, 0), 1) * d;
+    if (Math.abs(v.currentTime - t) > 0.03) {
+      try {
+        v.currentTime = t;
+      } catch (e) {
+        /* seeking not ready yet */
+      }
+    }
+  });
+
+  // Visual transforms
+  const videoScale = useTransform(scrollYProgress, [0, 1], [1.06, 1.16]);
 
   // Phase windows
   const a = useTransform(scrollYProgress, [0, 0.16, 0.22], [1, 1, 0]);
@@ -39,44 +79,33 @@ export default function HeroScroll() {
   return (
     <div id="top" ref={wrapperRef} data-testid="hero-scroll-container" className="relative h-[320vh] bg-void-900">
       <div className="sticky top-0 flex h-screen items-center justify-center overflow-hidden">
-        {/* Ambient background */}
-        <div className="pointer-events-none absolute inset-0">
-          <motion.div
-            style={{ scale: glowScale }}
-            className="absolute left-[60%] top-1/2 h-[80vh] w-[80vh] -translate-x-1/2 -translate-y-1/2 rounded-full bg-ice/10 blur-[120px]"
-          />
-          <motion.img
-            src={IMAGES.cyanBleed}
-            alt=""
-            style={{ y: bleedY }}
-            className="absolute inset-0 h-full w-full object-cover opacity-25 mix-blend-screen"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-void-900/40 via-transparent to-void-900" />
-          <div className="absolute inset-0 bg-gradient-to-r from-void-900 via-void-900/40 to-transparent md:via-void-900/20" />
-        </div>
-
-        {/* The wheel */}
-        <motion.img
-          src={IMAGES.wheel}
-          alt="Reifen und Alufelge – KFZ-Meisterwerkstatt Isaak"
-          data-testid="hero-wheel-image"
-          style={{
-            scale: wheelScale,
-            rotate: wheelRotate,
-            y: wheelY,
-            opacity: wheelOpacity,
-            WebkitMaskImage: "radial-gradient(ellipse 66% 70% at 54% 50%, #000 54%, transparent 100%)",
-            maskImage: "radial-gradient(ellipse 66% 70% at 54% 50%, #000 54%, transparent 100%)",
-          }}
-          className="relative z-10 ml-[20%] h-[72vh] max-h-[760px] w-auto select-none object-contain will-change-transform md:ml-[30%]"
-          draggable={false}
+        {/* Scroll-scrubbed video background */}
+        <motion.video
+          ref={videoRef}
+          src={HERO_VIDEO}
+          poster={IMAGES.wheel}
+          muted
+          playsInline
+          preload="auto"
+          data-testid="hero-video"
+          style={{ scale: videoScale, objectPosition: "72% 50%" }}
+          className="absolute inset-0 h-full w-full object-cover will-change-transform"
         />
+
+        {/* Legibility overlays */}
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-r from-void-900 via-void-900/55 to-transparent md:via-void-900/35" />
+          <div className="absolute inset-0 bg-gradient-to-b from-void-900/50 via-transparent to-void-900" />
+        </div>
 
         {/* Text overlays */}
         <div className="pointer-events-none absolute inset-0 z-20">
           {/* Phase A — resting hero */}
           <motion.div style={{ opacity: a, y: aY }} className="absolute inset-0 flex items-center justify-start px-6 md:px-12 lg:px-20">
             <div className="max-w-2xl">
+              <div className="pointer-events-auto mb-6">
+                <OpenStatus />
+              </div>
               <span className="mb-5 block text-xs font-bold uppercase tracking-[0.32em] text-ice md:text-sm">
                 Meisterbetrieb · Brakel-Erkeln
               </span>
@@ -124,7 +153,7 @@ export default function HeroScroll() {
             <h2 className="font-display text-4xl font-black uppercase leading-[0.95] tracking-tighter text-white md:text-7xl lg:text-[6.5vw]">
               Alles aus einer Hand
             </h2>
-            <p className="mt-5 max-w-xl text-base font-medium text-zinc-400 md:text-lg">
+            <p className="mt-5 max-w-xl text-base font-medium text-zinc-300 md:text-lg">
               Vom kleinen Defekt bis zur großen Instandsetzung — fachgerecht, fair und zuverlässig.
             </p>
           </motion.div>
@@ -152,7 +181,7 @@ export default function HeroScroll() {
         </div>
 
         {/* Scroll hint */}
-        <motion.div style={{ opacity: hint }} className="absolute bottom-7 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-2 text-zinc-500">
+        <motion.div style={{ opacity: hint }} className="absolute bottom-7 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-2 text-zinc-400">
           <span className="text-[10px] font-bold uppercase tracking-[0.3em]">Mehr entdecken</span>
           <MoveDown size={18} className="animate-bounce text-ice" />
         </motion.div>

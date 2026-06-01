@@ -14,6 +14,12 @@ export const IMAGES = {
     "https://static.prod-images.emergentagent.com/jobs/b8b5a439-0f6d-4bc1-b94a-302854f72d70/images/b2638919f4be3346a82a0faa0e35eca9fc49bd111cd5c5df5acd826577518a20.png",
 };
 
+export const HERO_VIDEO = `${process.env.PUBLIC_URL || ""}/hero-reifen.mp4`;
+
+const WA_MESSAGE = encodeURIComponent(
+  "Hallo, ich möchte gerne einen Termin in der KFZ-Meisterwerkstatt Isaak anfragen."
+);
+
 export const BUSINESS = {
   name: "KFZ-Meisterwerkstatt Isaak",
   short: "Isaak",
@@ -25,6 +31,8 @@ export const BUSINESS = {
   phoneHref: "tel:+495272390854",
   mobileDisplay: "0163 9755353",
   mobileHref: "tel:+491639755353",
+  whatsappDisplay: "0163 9755353",
+  whatsappHref: `https://wa.me/491639755353?text=${WA_MESSAGE}`,
   hours: [
     { d: "Montag", h: "08:00 – 18:30", open: true },
     { d: "Dienstag", h: "08:00 – 18:30", open: true },
@@ -40,3 +48,51 @@ export const BUSINESS = {
   mapsDir:
     "https://www.google.com/maps/dir/?api=1&destination=Anton-Fecke-Str.+6%2C+33034+Brakel-Erkeln",
 };
+
+// --- Live opening-hours status (Europe/Berlin) -----------------------------
+// minutes-of-day ranges per weekday (0 = Sunday … 6 = Saturday)
+const SCHEDULE = {
+  0: [], // Sonntag geschlossen
+  1: [[480, 1110]], // Mo 08:00–18:30
+  2: [[480, 1110]],
+  3: [[480, 1110]],
+  4: [[480, 1110]],
+  5: [[480, 1110]],
+  6: [[510, 840]], // Sa 08:30–14:00
+};
+const DAY_NAMES = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
+
+function fmtMinutes(m) {
+  const h = Math.floor(m / 60);
+  const mm = m % 60;
+  return `${String(h).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
+}
+
+export function getOpenStatus() {
+  // Berlin wall-clock time regardless of the visitor's timezone
+  const berlin = new Date(new Date().toLocaleString("en-US", { timeZone: "Europe/Berlin" }));
+  const dow = berlin.getDay();
+  const mins = berlin.getHours() * 60 + berlin.getMinutes();
+  const today = SCHEDULE[dow] || [];
+
+  for (const [start, end] of today) {
+    if (mins >= start && mins < end) {
+      return { open: true, label: "Jetzt geöffnet", detail: `bis ${fmtMinutes(end)} Uhr` };
+    }
+    if (mins < start) {
+      return { open: false, label: "Geschlossen", detail: `öffnet heute um ${fmtMinutes(start)} Uhr` };
+    }
+  }
+
+  // closed for the rest of today → find the next opening day
+  for (let i = 1; i <= 7; i++) {
+    const d = (dow + i) % 7;
+    const ranges = SCHEDULE[d];
+    if (ranges && ranges.length) {
+      const start = ranges[0][0];
+      const dayLabel = i === 1 ? "morgen" : DAY_NAMES[d];
+      return { open: false, label: "Geschlossen", detail: `öffnet ${dayLabel} um ${fmtMinutes(start)} Uhr` };
+    }
+  }
+  return { open: false, label: "Geschlossen", detail: "" };
+}

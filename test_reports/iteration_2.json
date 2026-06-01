@@ -1,0 +1,29 @@
+{
+  "summary": "Iteration 2 frontend-only re-test (KFZ-Meisterwerkstatt Isaak landing). All 3 new features verified on desktop (1920x1080) and mobile (390x844): (1) hero-video element with src ending /hero-reifen.mp4 + poster fallback present (server returns 206 bytes range, content-type video/mp4); (2) two live open-status pills render (one in hero Phase A, one in contact Öffnungszeiten card) with data-open attribute and label 'Jetzt geöffnet · bis 18:30 Uhr'; (3) whatsapp-fab visible only on desktop, mobile-call-bar visible only on mobile with grid-cols-3 (call, whatsapp, route), and contact-whatsapp-button present — all WhatsApp links point to wa.me/491639755353 with target=_blank rel=noopener noreferrer. Hero CTAs and all sections (contact, services, location, opening-hours-list, footer, main-nav) regress-pass. 0 page errors, 0 console errors. Only carryover: 2 framer-motion warnings about non-static position container (non-blocking, same as iteration 1).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "HeroScroll (useScroll)", "issues": ["Carryover from iter 1: 2 framer-motion console warnings 'Please ensure that the container has a non-static position...'. Non-blocking. The wrapperRef div has no explicit position class — adding `relative` would silence it."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "(Optional, non-blocking) Add `relative` class to the wrapperRef div in /app/frontend/src/components/HeroScroll.jsx (line 80) to eliminate framer-motion useScroll warnings."
+  ],
+  "critical_code_review_comments": [
+    "HERO_VIDEO = `${process.env.PUBLIC_URL || ''}/hero-reifen.mp4` correctly resolves to /hero-reifen.mp4 and is served by the dev server with 206 partial-content + content-type video/mp4 (verified). Headless Chromium falls back to poster image which is expected behavior — real browsers will play the H.264 mp4.",
+    "WhatsApp links correctly use international format wa.me/491639755353 (no leading +) and include a pre-encoded German message, target=_blank + rel=noopener noreferrer everywhere.",
+    "OpenStatus uses Europe/Berlin time via toLocaleString — correct cross-timezone behavior. Verified to render 'Jetzt geöffnet · bis 18:30 Uhr' with data-open='true' at test time (Mon afternoon Berlin).",
+    "MobileCallBar uses grid-cols-3 and lg:hidden; WhatsAppFab uses lg:flex + hidden — responsive visibility is correctly inverted between the two components."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (no backend)", "frontend": "100%"},
+  "test_credentials": "N/A",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All iteration-2 acceptance criteria verified end-to-end. Verified testids: hero-video (src=/hero-reifen.mp4, poster=wheel image, fetch returns 206 video/mp4), open-status x2 (hero Phase A + contact hours card, data-open + label), whatsapp-fab (desktop only, wa.me/491639755353, target=_blank), mobile-call-bar (mobile only, grid-cols-3) with mobilebar-call (tel), mobilebar-whatsapp (wa.me, target=_blank), mobilebar-route (maps dir, target=_blank); contact-call-button/contact-whatsapp-button/contact-route-button all correct. Hero CTAs hero-cta-call=tel:+495272390854 and hero-cta-appointment=#kontakt unchanged. Regression sections OK: services-section, contact-section, location-section, opening-hours-list, main-footer, main-nav. No layout overlap. 0 errors. The 2 framer-motion non-static-position warnings persist from iter 1.",
+  "rca of the issue": "N/A — no bugs found."
+}
