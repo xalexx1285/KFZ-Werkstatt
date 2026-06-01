@@ -30,28 +30,23 @@ Assets provided: a cinematic dark studio photo of a premium alloy wheel/tire, an
 - Served on port 3000 (supervisor `frontend`); REACT_APP_BACKEND_URL from env.
 
 ## What's Implemented (2026-06-01)
-- **Scroll-scrubbed cinematic hero** (HeroScroll.jsx, 320vh): wheel image scales/rotates on scroll with 4 synchronized text phases. Phase A (resting) shows brand, subheadline + CTAs "Jetzt anrufen" / "Termin anfragen". Phase D shows the big phone number as a call link.
-- **Sticky glass Navbar** with cyan phone CTA + mobile menu.
-- **Marquee** of service keywords.
-- **About** section (Über uns) + 3 fact cards (Inhaber/Standort/Betrieb).
-- **Services** bento grid — all 5 services with icons (wheel image on Reifenservice, carbon texture on Reparaturen).
-- **Trust** section ("Warum Isaak") — 4 qualitative cards.
-- **Contact** section — full contact card (phone/mobile/address/hours + Anrufen/Route buttons) and full Öffnungszeiten table.
-- **Location/Anfahrt** — keyless Google Maps embed (dark-filtered) + "Route planen" button.
-- **Footer/Impressum** — § 5 TMG block + big ISAAK wordmark.
-- **Mobile sticky call bar** (Anrufen / Route) for conversion.
-- Editorial word-by-word reveal animations (Reveal.jsx, variants-based observer on stable parent).
+### Iteration 2 — Hero video + WhatsApp + live open-status
+- **Scroll-scrubbed hero VIDEO** (HeroScroll.jsx): replaced the still wheel image with the client's MP4 (`/public/hero-reifen.mp4`, H.264/avc1). Desktop scrubs `video.currentTime` from scroll progress (useScroll + useMotionValueEvent); mobile/reduced-motion autoplays a muted loop. Poster = wheel image fallback (graceful when codec unavailable). Server serves it with HTTP 206 range requests.
+- **Live "Heute geöffnet / geschlossen" indicator** (OpenStatus.jsx + getOpenStatus in utils.js): computes status from Europe/Berlin time vs the schedule; green pulsing dot + "Jetzt geöffnet · bis HH:MM Uhr" or "Geschlossen · öffnet …". Shown in hero Phase A and in the Contact opening-hours card; refreshes every 60s.
+- **WhatsApp click-to-chat** (WhatsAppFab.jsx desktop floating button, MobileCallBar 3-col incl. WhatsApp, Contact card button) → `wa.me/491639755353` with pre-filled German message. Uses mobile number 0163 9755353.
+
+### Iteration 1 — base site
+- Scroll-scrub hero, sticky glass Navbar, Marquee, About, Services (5), Trust (4), Contact + Öffnungszeiten, Location/Anfahrt (Google Maps embed + route), Footer/Impressum (§5 TMG), mobile sticky call bar, editorial reveal animations.
 
 ## Testing Status
 - testing_agent_v3 iteration_1: **Frontend 100% pass**, 0 console/page errors. All data-testids, tel:/maps links, nav scrolling, mobile menu, mobile call bar, map iframe and Impressum verified on desktop + mobile.
 - Known non-blocking: 2 framer-motion `useScroll` position warnings (cosmetic, functionality confirmed).
 
 ## Prioritized Backlog
-- **P1:** Replace placeholder/stock imagery with real photos of the workshop & team (boosts trust/conversion). Add real customer reviews/Google rating badge.
-- **P1:** Verify & finalize phone numbers + opening hours before publishing; add legal Datenschutz/Impressum full text.
-- **P2:** Optional appointment request form (needs backend or email service e.g. SendGrid/Resend) — currently appointments via phone only.
-- **P2:** SEO: structured data (LocalBusiness JSON-LD), Open Graph image, sitemap.
-- **P2:** WhatsApp click-to-chat button; "heute geöffnet/geschlossen" live status indicator.
+- **P1:** Replace remaining placeholder imagery with real workshop/team photos. Add real Google reviews/rating badge.
+- **P1:** Verify & finalize phone numbers + opening hours before publishing; confirm the WhatsApp number (currently mobile 0163 9755353); add full Datenschutz/Impressum text.
+- **P2:** Optional appointment request form (needs backend or email service e.g. SendGrid/Resend) — currently appointments via phone/WhatsApp only.
+- **P2:** SEO: structured data (LocalBusiness JSON-LD with openingHours), Open Graph image, sitemap.
 - **P3:** Multi-language (EN) toggle.
 
 ## Next Tasks
